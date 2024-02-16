@@ -30,7 +30,7 @@ class ArticleParser:
         self.ignore_paywalled = True
         self.site_domain = site_domain
 
-    def parse_article(self, url):
+    def parse_article_at_url(self, url):
         soup = BeautifulSoup(requests.get(url).text, "html.parser")
         headline = self.parse_headline(soup)
         article_text = self.parse_text(soup)

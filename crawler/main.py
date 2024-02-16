@@ -35,7 +35,7 @@ async def linked_articles(homepage_url, parser):
         if link not in visited_links and parser.is_article_url(link):
             await asyncio.sleep(2)
             try:
-                yield (parser.parse_article(link))
+                yield (parser.parse_article_at_url(link))
             except requests.exceptions.HTTPError as err:
                 logging.info(f"HTTPError: {err}")
 
