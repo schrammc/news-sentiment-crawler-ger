@@ -93,6 +93,7 @@ class ArticleParser:
         return False
 
     def is_article_url(self, url):
+        """Figure out if the given URL is a valid URL for an article that this parser expects"""
         return True
 
 
