@@ -25,8 +25,9 @@ def links_in(soup):
             yield a_tag["href"]
 
 
-async def linked_articles(homepage_url, parser):
+async def linked_articles(parser):
     visited_links = set()
+    homepage_url = parser.site_domain
 
     for link in links_in(get_soup_in(homepage_url)):
         if urllib.parse.urlparse(link).scheme == "":
@@ -44,12 +45,12 @@ async def linked_articles(homepage_url, parser):
 
 async def main():
     logging.info("Starting crawler")
-    async for x in linked_articles("https://www.spiegel.de", SpiegelParser()):
+    async for x in linked_articles(SpiegelParser()):
         if x.headline:
             logging.debug("---")
             logging.debug(f"{x.headline} @ {x.url}")
             logging.debug(f"{x.article_text}")
-            logging.debug(str(x.text_sentiment()))
+            logging.debug(str(x.text_sentiment))
 
 
 logging.basicConfig(

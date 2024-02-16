@@ -1,28 +1,17 @@
 import urllib
 from bs4 import BeautifulSoup
-from sentiment import SentimentProbabilities, sentiment_model
+import sentiment
 import requests
-from dataclasses import dataclass
 from datetime import datetime
 
 
-@dataclass  # noqa: F821
 class Article:
-    url: str
-    headline: str | None
-    article_text: str | None
-    fetch_time: datetime
-
-    def text_sentiment(self):
-        """Extract the sentiment of an article's text"""
-        probs = sentiment_model.predict_sentiment(
-            [self.article_text],
-            output_probabilities=True,
-        )
-
-        return SentimentProbabilities(
-            probs[1][0][0][1], probs[1][0][1][1], probs[1][0][2][1]
-        )
+    def __init__(self, url, headline, article_text, fetch_time):
+        self.url = url
+        self.headline = headline
+        self.article_text = article_text
+        self.fetch_time = fetch_time
+        self.text_sentiment = sentiment.sentiment_of_text(article_text)
 
     def __str__(self):
         return f"{self.headline} | {self.text}"
@@ -70,7 +59,7 @@ class ArticleParser:
 
 class SpiegelParser(ArticleParser):
     def __init__(self):
-        super().__init__("www.spiegel.de")
+        super().__init__("https://www.spiegel.de")
 
     def parse_text(self, soup):
         return (
@@ -112,7 +101,7 @@ class SpiegelParser(ArticleParser):
 
 class ZeitParser(ArticleParser):
     def __init__(self):
-        super().__init__("www.zeit.de")
+        super().__init__("https://www.zeit.de")
 
     def parse_headline(self, soup):
         headline_tag = soup.find("span", class_="article-heading__title")
