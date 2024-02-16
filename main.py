@@ -120,7 +120,7 @@ class SpiegelParser(ArticleParser):
             return None
 
     def is_paywalled(self, soup):
-        pass
+        return soup.find("div", {"data-area": "paywall"}) is not None
 
     def is_article_url(self, url):
         return (
