@@ -1,3 +1,4 @@
 germansentiment
 requests
 bs4
+pymongo

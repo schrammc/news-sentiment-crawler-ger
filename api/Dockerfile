@@ -1,5 +1,5 @@
 FROM python:3.12.2-slim
-WORKDIR /app/crawler
+WORKDIR /app/api
 COPY ./ .
 RUN pip install --no-cache-dir -r requirements.txt
-CMD ["python", "main.py"]
+CMD ["uvicorn", "main:app"]

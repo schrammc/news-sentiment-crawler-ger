@@ -3,7 +3,9 @@ from bs4 import BeautifulSoup
 import asyncio
 import urllib
 import logging
+
 from parser import SpiegelParser, ZeitParser
+from storage import MongoStorage
 
 # General plan:
 #   - Scrape news articles linked on front-page at any given time (do this once per hour?)
@@ -13,6 +15,8 @@ from parser import SpiegelParser, ZeitParser
 backoff_seconds_per_domain = 5
 
 parsers = [ZeitParser(), SpiegelParser()]
+
+storage = MongoStorage("localhost", 27017)
 
 
 def get_soup_in(url):
@@ -61,6 +65,8 @@ async def main():
             logging.debug(f"{x.headline} @ {x.url}")
             logging.debug(f"{x.article_text}")
             logging.debug(str(x.text_sentiment))
+            storage.store_article(x)
+            storage.get_all_documents()
 
 
 logging.basicConfig(
