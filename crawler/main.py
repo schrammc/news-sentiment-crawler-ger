@@ -48,7 +48,7 @@ async def main():
         if x.headline:
             logging.debug("---")
             logging.debug(f"{x.headline} @ {x.url}")
-            logging.debug(f"{x.text}")
+            logging.debug(f"{x.article_text}")
             logging.debug(str(x.text_sentiment()))
 
 

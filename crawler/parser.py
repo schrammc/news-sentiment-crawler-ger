@@ -2,18 +2,19 @@ import urllib
 from bs4 import BeautifulSoup
 from sentiment import SentimentProbabilities, sentiment_model
 import requests
+from dataclasses import dataclass
 
 
+@dataclass  # noqa: F821
 class Article:
-    def __init__(self, url, headline, article_text):
-        self.url = url
-        self.text = article_text
-        self.headline = headline
+    url: str
+    headline: str | None
+    article_text: str | None
 
     def text_sentiment(self):
         """Extract the sentiment of an article's text"""
         probs = sentiment_model.predict_sentiment(
-            [self.text],
+            [self.article_text],
             output_probabilities=True,
         )
 
