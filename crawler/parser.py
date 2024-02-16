@@ -4,7 +4,7 @@ import requests
 from datetime import datetime
 import dataclasses
 
-import crawler.sentiment
+import sentiment
 
 
 class Article:

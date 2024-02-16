@@ -1,6 +1,6 @@
 from abc import abstractmethod
 from pymongo import MongoClient
-from crawler.parser import Article
+from parser import Article
 
 
 class ArticleStore:
@@ -23,5 +23,4 @@ class MongoStorage(ArticleStore):
         self.mongo_collection.insert_one(article.to_dict())
 
     def get_all_documents(self):
-        for document in self.mongo_collection.find({}):
-            print(str(Article.from_dict(document)))
+        return list(self.mongo_collection.find({}))

@@ -2,12 +2,16 @@ version: '3.8'
 
 services:
   api:
-    build: ./api
+    build:
+      context: crawler
+      dockerfile: ../Dockerfile.api
     ports:
       - "8080:8080"
 
   crawler:
-    build: ./crawler
+    build:
+      context: crawler
+      dockerfile: ../Dockerfile.crawler
 
   mongodb:
     image: mongo:latest
