@@ -32,11 +32,21 @@ async def linked_articles(parser):
     for link in links_in(get_soup_in(homepage_url)):
         if urllib.parse.urlparse(link).scheme == "":
             continue
-        print(link)
-        if link not in visited_links and parser.is_article_url(link):
+        if link in visited_links:
+            pass
+        elif not parser.is_article_url(link):
+            logging.debug(f"Ignoring non-article url: {link}")
+        else:
             await asyncio.sleep(2)
             try:
-                yield (parser.parse_article_at_url(link))
+                article = parser.parse_article_at_url(link)
+                if (
+                    article is not None
+                    and article.headline is not None
+                    and article.article_text is not None
+                ):
+                    logging.info(f"Parsed article: {article.url}")
+                    yield article
             except requests.exceptions.HTTPError as err:
                 logging.info(f"HTTPError: {err}")
 
