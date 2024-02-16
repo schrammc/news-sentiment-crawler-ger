@@ -26,8 +26,9 @@ class Article:
 
 
 class ArticleParser:
-    def __init__(self):
+    def __init__(self, site_domain):
         self.ignore_paywalled = True
+        self.site_domain = site_domain
 
     def parse_article(self, url):
         soup = BeautifulSoup(requests.get(url).text, "html.parser")
@@ -65,6 +66,9 @@ class ArticleParser:
 
 
 class SpiegelParser(ArticleParser):
+    def __init__(self):
+        super().__init__("www.spiegel.de")
+
     def parse_text(self, soup):
         return (
             " ".join(
@@ -104,6 +108,9 @@ class SpiegelParser(ArticleParser):
 
 
 class ZeitParser(ArticleParser):
+    def __init__(self):
+        super().__init__("www.zeit.de")
+
     def parse_headline(self, soup):
         headline_tag = soup.find("span", class_="article-heading__title")
         return " ".join(headline_tag.strings)

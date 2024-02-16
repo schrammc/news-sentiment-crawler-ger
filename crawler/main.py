@@ -3,7 +3,7 @@ from bs4 import BeautifulSoup
 import asyncio
 import urllib
 import logging
-from parser import SpiegelParser
+from parser import SpiegelParser, ZeitParser
 
 # General plan:
 #   - Scrape news articles linked on front-page at any given time (do this once per hour?)
@@ -12,7 +12,7 @@ from parser import SpiegelParser
 
 backoff_seconds_per_domain = 5
 
-top_domains = ["www.zeit.de", "www.spiegel.de", "www.fr.de"]
+parsers = [ZeitParser(), SpiegelParser()]
 
 
 def get_soup_in(url):
