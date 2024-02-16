@@ -3,6 +3,7 @@ from bs4 import BeautifulSoup
 from sentiment import SentimentProbabilities, sentiment_model
 import requests
 from dataclasses import dataclass
+from datetime import datetime
 
 
 @dataclass  # noqa: F821
@@ -10,6 +11,7 @@ class Article:
     url: str
     headline: str | None
     article_text: str | None
+    fetch_time: datetime
 
     def text_sentiment(self):
         """Extract the sentiment of an article's text"""
@@ -39,7 +41,7 @@ class ArticleParser:
         if self.ignore_paywalled and self.is_paywalled(soup):
             return None
 
-        return Article(url, headline, article_text)
+        return Article(url, headline, article_text, datetime.now)
 
     def parse_headline(self, soup):
         """Extract an article's headline"""
