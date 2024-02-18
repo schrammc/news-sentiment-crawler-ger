@@ -5,7 +5,7 @@ import urllib
 import logging
 from appconfig import Config
 
-from parser import SpiegelParser, ZeitParser
+from newssite import SiteSpiegel, SiteZeit
 from storage import MongoStorage
 
 # General plan:
@@ -16,7 +16,7 @@ from storage import MongoStorage
 
 backoff_seconds_per_domain = 5
 
-parsers = [ZeitParser(), SpiegelParser()]
+sites = [SiteSpiegel(), SiteZeit()]
 
 storage = MongoStorage(Config().mongo_host, 27017)
 
@@ -61,7 +61,7 @@ async def linked_articles(parser):
 
 async def main():
     logging.info("Starting crawler")
-    async for x in linked_articles(SpiegelParser()):
+    async for x in linked_articles(SiteSpiegel()):
         if x.headline:
             logging.debug("---")
             logging.debug(f"{x.headline} @ {x.url}")

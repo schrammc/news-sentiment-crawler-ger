@@ -2,46 +2,10 @@ import urllib
 from bs4 import BeautifulSoup
 import requests
 from datetime import datetime, timezone
-import dataclasses
-
-import sentiment
+from article import Article
 
 
-class Article:
-    def __init__(self, url, headline, article_text, fetch_time, article_sentiment=None):
-        self.url = url
-        self.headline = headline
-        self.article_text = article_text
-        self.fetch_time = fetch_time
-        if article_sentiment is None:
-            self.text_sentiment = sentiment.sentiment_of_text(article_text)
-        else:
-            self.text_sentiment = article_sentiment
-
-    def __str__(self):
-        return f"{self.headline} | {self.text}"
-
-    def to_dict(self):
-        return {
-            "url": self.url,
-            "headline": self.headline,
-            "article_text": self.article_text,
-            "fetch_time": self.fetch_time,
-            "text_sentiment": dataclasses.asdict(self.text_sentiment),
-        }
-
-    @classmethod
-    def from_dict(cls, the_dict):
-        cls(
-            the_dict["url"],
-            the_dict["headline"],
-            the_dict["article_text"],
-            the_dict["fetch_time"],
-            sentiment.SentimentProbabilities(**the_dict["text_sentiment"]),
-        )
-
-
-class ArticleParser:
+class NewsSite:
     def __init__(self, site_domain):
         self.ignore_paywalled = True
         self.site_domain = site_domain
@@ -81,7 +45,7 @@ class ArticleParser:
         return True
 
 
-class SpiegelParser(ArticleParser):
+class SiteSpiegel(NewsSite):
     def __init__(self):
         super().__init__("https://www.spiegel.de")
 
@@ -123,7 +87,7 @@ class SpiegelParser(ArticleParser):
         )
 
 
-class ZeitParser(ArticleParser):
+class SiteZeit(NewsSite):
     def __init__(self):
         super().__init__("https://www.zeit.de")
 

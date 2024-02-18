@@ -1,6 +1,6 @@
 from abc import abstractmethod
 from pymongo import MongoClient
-from parser import Article
+from article import Article
 
 class ArticleStore:
     @abstractmethod
