@@ -3,6 +3,7 @@ from bs4 import BeautifulSoup
 import asyncio
 import urllib
 import logging
+from appconfig import Config
 
 from parser import SpiegelParser, ZeitParser
 from storage import MongoStorage
@@ -12,11 +13,12 @@ from storage import MongoStorage
 #   - Analyze for sentiment
 #   - Provide API / UI
 
+
 backoff_seconds_per_domain = 5
 
 parsers = [ZeitParser(), SpiegelParser()]
 
-storage = MongoStorage("localhost", 27017)
+storage = MongoStorage(Config().mongo_host, 27017)
 
 
 def get_soup_in(url):

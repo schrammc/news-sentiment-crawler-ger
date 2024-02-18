@@ -1,7 +1,9 @@
 from fastapi import FastAPI
 from storage import MongoStorage
+from datetime import datetime
+from appconfig import Config
 
-storage = MongoStorage("localhost", 27017)
+storage = MongoStorage(Config().mongo_host, 27017)
 
 app = FastAPI()
 

@@ -2,6 +2,7 @@ germansentiment
 requests
 bs4
 pymongo
+python-dotenv
 
 fastapi
 uvicorn
