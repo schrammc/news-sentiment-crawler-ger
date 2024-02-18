@@ -2,14 +2,13 @@ from abc import abstractmethod
 from pymongo import MongoClient
 from parser import Article
 
-
 class ArticleStore:
     @abstractmethod
     def store_article(self, article):
         pass
 
     @abstractmethod
-    def get_all_documents(self):
+    def get_documents(self, fromdatetime=None, todatetime=None):
         pass
 
 
@@ -22,5 +21,16 @@ class MongoStorage(ArticleStore):
     def store_article(self, article):
         self.mongo_collection.insert_one(article.to_dict())
 
-    def get_all_documents(self):
-        return list(self.mongo_collection.find({}))
+    def get_documents(self, fromdatetime=None, todatetime=None):
+        query = {}
+
+        time_constraints = {}
+        if fromdatetime is not None:
+            time_constraints["$gte"] = fromdatetime
+        if todatetime is not None:
+            time_constraints["$lte"] = todatetime
+
+        if time_constraints != {}:
+            query["fetch_time"] = time_constraints
+
+        return list(self.mongo_collection.find(query))

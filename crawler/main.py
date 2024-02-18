@@ -66,7 +66,6 @@ async def main():
             logging.debug(f"{x.article_text}")
             logging.debug(str(x.text_sentiment))
             storage.store_article(x)
-            storage.get_all_documents()
 
 
 logging.basicConfig(

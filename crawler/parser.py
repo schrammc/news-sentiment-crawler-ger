@@ -1,7 +1,7 @@
 import urllib
 from bs4 import BeautifulSoup
 import requests
-from datetime import datetime
+from datetime import datetime, timezone
 import dataclasses
 
 import sentiment
@@ -26,7 +26,7 @@ class Article:
             "url": self.url,
             "headline": self.headline,
             "article_text": self.article_text,
-            "fetch_time": self.fetch_time.isoformat(),
+            "fetch_time": self.fetch_time,
             "text_sentiment": dataclasses.asdict(self.text_sentiment),
         }
 
@@ -36,7 +36,7 @@ class Article:
             the_dict["url"],
             the_dict["headline"],
             the_dict["article_text"],
-            datetime.fromisoformat(the_dict["fetch_time"]),
+            the_dict["fetch_time"],
             sentiment.SentimentProbabilities(**the_dict["text_sentiment"]),
         )
 
@@ -54,7 +54,7 @@ class ArticleParser:
         if self.ignore_paywalled and self.is_paywalled(soup):
             return None
 
-        return Article(url, headline, article_text, datetime.now())
+        return Article(url, headline, article_text, datetime.now(timezone.utc))
 
     def parse_headline(self, soup):
         """Extract an article's headline"""
