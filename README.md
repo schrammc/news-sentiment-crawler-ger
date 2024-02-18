@@ -19,3 +19,11 @@ sources.
 # How to run it
 
 Currently you can run this locally by cloning the repository and running `docker compose up`
+
+# Future work
+
+This is by no means complete, coming soon:
+
+- [ ] Set up a github action to deploy this to `api.christof-schramm.net`
+- [ ] Add a TS frontend on [christof-schramm.net](https://christof-schramm.net)
+- [ ] Add some more news platforms
