@@ -1,12 +1,22 @@
 import germansentiment
 from dataclasses import dataclass
+import logging
 
-sentiment_model = germansentiment.SentimentModel()
+sentiment_model = None
+
+
+def get_sentiment_model():
+    global sentiment_model
+    logging.info("Building sentiment model...")
+    if sentiment_model is None:
+        sentiment_model = germansentiment.SentimentModel()
+
+    return sentiment_model
 
 
 def sentiment_of_text(text):
     """Extract the sentiment of a piece of german text"""
-    probs = sentiment_model.predict_sentiment(
+    probs = get_sentiment_model().predict_sentiment(
         [text],
         output_probabilities=True,
     )
