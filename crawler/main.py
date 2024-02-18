@@ -1,12 +1,14 @@
+import logging
+import sys
 import requests
 from bs4 import BeautifulSoup
 import asyncio
 import urllib
-import logging
 from appconfig import Config
 
 from newssite import SiteSpiegel, SiteZeit
 from storage import MongoStorage
+
 
 # General plan:
 #   - Scrape news articles linked on front-page at any given time (do this once per hour?)
@@ -38,8 +40,9 @@ async def linked_articles(parser):
     for link in links_in(get_soup_in(homepage_url)):
         if urllib.parse.urlparse(link).scheme == "":
             continue
-        if link in visited_links:
-            pass
+
+        if storage.article_by_url(link) is None:
+            logging.debug(f"Ignoring article (already visited) {link}")
         elif not parser.is_article_url(link):
             logging.debug(f"Ignoring non-article url: {link}")
         else:
@@ -60,7 +63,13 @@ async def linked_articles(parser):
 
 
 async def main():
-    logging.info("Starting crawler")
+    logging.basicConfig(
+        level=logging.DEBUG,
+        format="[%(levelname)s] %(asctime)s -- %(message)s -- %(module)s:%(lineno)s",
+        stream=sys.stdout,
+        force=True,
+    )
+
     async for x in linked_articles(SiteSpiegel()):
         if x.headline:
             logging.debug("---")
@@ -69,10 +78,5 @@ async def main():
             logging.debug(str(x.text_sentiment))
             storage.store_article(x)
 
-
-logging.basicConfig(
-    level=logging.DEBUG,
-    format="[%(levelname)s] %(asctime)s -- %(message)s -- %(module)s:%(lineno)s",
-)
 
 asyncio.run(main())

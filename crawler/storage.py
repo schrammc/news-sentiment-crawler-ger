@@ -1,6 +1,7 @@
 from abc import abstractmethod
 from pymongo import MongoClient
 from article import Article
+import logging
 
 class ArticleStore:
     @abstractmethod
@@ -9,11 +10,22 @@ class ArticleStore:
 
     @abstractmethod
     def get_documents(self, fromdatetime=None, todatetime=None):
+        """Get documents possibly limited by time
+
+        :param fromdatetime: If this is given, select only articles from on or after this time
+        :param todatetime: If this is given, select only articles from on or before this time
+        """
+        pass
+
+    @abstractmethod
+    def article_by_url(self, url):
+        """Find an article by it's URL"""
         pass
 
 
 class MongoStorage(ArticleStore):
     def __init__(self, hostname, port):
+        logging.debug("Initialize mongo storage")
         self.mongo_client = MongoClient(host=hostname, port=port)
         self.mongo_db = self.mongo_client["testDB"]
         self.mongo_collection = self.mongo_db["articles"]
@@ -34,3 +46,6 @@ class MongoStorage(ArticleStore):
             query["fetch_time"] = time_constraints
 
         return list(self.mongo_collection.find(query))
+
+    def article_by_url(self, url):
+        return self.mongo_collection.find_one({ "url": url})
