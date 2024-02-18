@@ -1,22 +1,27 @@
 import germansentiment
 from dataclasses import dataclass
 import logging
+import asyncio
 
 sentiment_model = None
+sentiment_model_lock = asyncio.Lock()
 
 
-def get_sentiment_model():
+async def get_sentiment_model():
     global sentiment_model
-    logging.info("Building sentiment model...")
-    if sentiment_model is None:
-        sentiment_model = germansentiment.SentimentModel()
+    async with sentiment_model_lock:
+        if sentiment_model is None:
+            logging.info("Building sentiment model...")
+            sentiment_model = germansentiment.SentimentModel()
 
-    return sentiment_model
+    return        sentiment_model
 
 
-def sentiment_of_text(text):
+async def sentiment_of_text(text):
     """Extract the sentiment of a piece of german text"""
-    probs = get_sentiment_model().predict_sentiment(
+    sentiment_model = await get_sentiment_model()
+
+    probs = sentiment_model.predict_sentiment(
         [text],
         output_probabilities=True,
     )
