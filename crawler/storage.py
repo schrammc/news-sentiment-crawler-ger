@@ -3,6 +3,7 @@ from pymongo import MongoClient
 from article import Article
 import logging
 
+
 class ArticleStore:
     @abstractmethod
     def store_article(self, article):

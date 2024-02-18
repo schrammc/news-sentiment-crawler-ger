@@ -31,6 +31,9 @@ class NewsSite:
         if self.ignore_paywalled and self.is_paywalled(soup):
             return None
 
+        if headline is None or article_text is None:
+            return None
+
         article = await Article.new_article(
             url, headline, article_text, datetime.now(timezone.utc)
         )
@@ -65,14 +68,17 @@ class NewsSite:
 
     async def linked_articles(self, storage):
         visited_links = set()
+        links = list(links_in(await get_soup_in(self.site_domain)))
 
-        logging.debug(f"Crawling for articles on {self.site_domain}")
+        logging.debug(
+            f"Crawling for articles on {self.site_domain} ({len(links)} links)"
+        )
 
-        for link in links_in(await get_soup_in(self.site_domain)):
+        for link in links:
             if urllib.parse.urlparse(link).scheme == "":
                 continue
 
-            if storage.article_by_url(link) is None:
+            if storage.article_by_url(link) is not None:
                 logging.debug(f"Ignoring article (already visited) {link}")
             elif not self.is_article_url(link):
                 logging.debug(f"Ignoring non-article url: {link}")
@@ -91,6 +97,8 @@ class NewsSite:
                     logging.info(f"HTTPError: {err}")
 
             visited_links.add(link)
+
+        logging.debug(f"Completed crawling {self.site_domain}")
 
 
 class SiteSpiegel(NewsSite):
@@ -143,6 +151,10 @@ class SiteZeit(NewsSite):
 
     def parse_headline(self, soup):
         headline_tag = soup.find("span", class_="article-heading__title")
+
+        if headline_tag is None:
+            return None
+
         return " ".join(headline_tag.strings)
 
     def parse_text(self, soup):
@@ -154,6 +166,8 @@ class SiteZeit(NewsSite):
             )
 
             return " ".join(paragraph_texts).replace("\n", " ")
+        else:
+            return None
 
     def is_paywalled(self, soup):
         return soup.find("aside", id="paywall") is not None

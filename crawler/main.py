@@ -9,6 +9,13 @@ from storage import MongoStorage
 sites = [SiteSpiegel(), SiteZeit()]
 
 
+async def crawl_and_store(storage, site):
+    async for x in site.linked_articles(storage):
+        if x.headline:
+            logging.debug(f"Storing article {x.headline} @ {x.url}")
+            storage.store_article(x)
+
+
 async def main():
     logging.basicConfig(
         level=logging.DEBUG,
@@ -18,14 +25,9 @@ async def main():
     )
     logging.info("Starting crawler...")
     storage = MongoStorage(Config().mongo_host, 27017)
-
-    async for x in SiteSpiegel().linked_articles(storage):
-        if x.headline:
-            logging.debug("---")
-            logging.debug(f"{x.headline} @ {x.url}")
-            logging.debug(f"{x.article_text}")
-            logging.debug(str(x.text_sentiment))
-            storage.store_article(x)
+    await asyncio.gather(
+        *map(lambda site: crawl_and_store(storage, site), sites)
+    )
 
 
 asyncio.run(main())
