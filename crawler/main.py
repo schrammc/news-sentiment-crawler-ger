@@ -9,11 +9,15 @@ from storage import MongoStorage
 sites = [SiteSpiegel(), SiteZeit()]
 
 
-async def crawl_and_store(storage, site):
-    async for x in site.linked_articles(storage):
-        if x.headline:
-            logging.debug(f"Storing article {x.headline} @ {x.url}")
-            storage.store_article(x)
+async def crawl_and_store(storage, site, loop_delay_minutes=10):
+    while True:
+        async for x in site.linked_articles(storage):
+            if x.headline:
+                logging.debug(f"Storing article {x.headline} @ {x.url}")
+                storage.store_article(x)
+
+        logging.debug(f"Sleeping {loop_delay_minutes} minutes before looping")
+        asyncio.sleep(60*loop_delay_minutes)
 
 
 async def main():
