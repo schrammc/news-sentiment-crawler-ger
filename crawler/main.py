@@ -3,13 +3,16 @@ import sys
 import asyncio
 from appconfig import Config
 
-from newssite import SiteSpiegel, SiteZeit
-from storage import MongoStorage
+from newssite import NewsSite, SiteSpiegel, SiteZeit
+from storage import ArticleStore, MongoStorage
 
 sites = [SiteSpiegel(), SiteZeit()]
 
 
-async def crawl_and_store(storage, site, loop_delay_minutes=10):
+async def crawl_and_store(storage: ArticleStore, site: NewsSite, loop_delay_minutes: int = 10):
+    """Crawl the articles from the given site forever.
+
+    :param loop_delay_minutes: the amount wait-time before crawling again"""
     while True:
         async for x in site.linked_articles(storage):
             if x.headline:
