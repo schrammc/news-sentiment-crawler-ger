@@ -46,3 +46,28 @@ jobs:
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKERHUB_REPOSITORY }}:crawler-crawler
 
+  deploy:
+    runs-on: ubuntu-latest
+    needs:
+      - api
+      - crawler
+
+    steps:
+      - name: Deploy via ssh
+        uses: appleboy/ssh-action@master
+        with:
+          host: api.christof-schramm.net
+          username: ${{ secrets.SSH_SERVER_USERNAME }}
+          key: ${{ secrets.SSH_SERVER_KEY }}
+          script: |
+            docker pull schrammc012/schrammc-playground:crawler-crawler
+            docker pull schrammc012/schrammc-playground:crawler-api
+
+            docker stop crawler-container || true
+            docker rm crawler-container || true
+            docker run -e "MONGO_HOST=localhost" -d --name crawler-container schrammc012/schrammc-playground:crawler-crawler
+
+            docker stop api-container || true
+            docker rm api-container || true
+            docker run -e "MONGO_HOST=localhost" -d -p 80:8080 --name api-container schrammc012/schrammc-playground:crawler-api
+
