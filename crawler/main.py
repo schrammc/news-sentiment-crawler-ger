@@ -24,7 +24,9 @@ async def main():
         force=True,
     )
     logging.info("Starting crawler...")
-    storage = MongoStorage(Config().mongo_host, 27017)
+    config = Config()
+    storage = MongoStorage(config.mongo_host, 27017,
+                           config.mongo_user, config.mongo_password)
     await asyncio.gather(
         *map(lambda site: crawl_and_store(storage, site), sites)
     )

@@ -15,6 +15,8 @@ class Config:
 
             cls.__instance = super().__new__(cls)
             mongo_host = os.getenv("MONGO_HOST")
+            mongo_user = os.getenv("MONGO_USER")
+            mongo_password = os.getenv("MONGO_PASSWORD")
             cls.__instance.mongo_host = mongo_host
 
             logging.debug(f"Initialized config. mongo_host is {mongo_host}")

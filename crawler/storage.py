@@ -25,9 +25,10 @@ class ArticleStore:
 
 
 class MongoStorage(ArticleStore):
-    def __init__(self, hostname, port):
+    def __init__(self, hostname, port, username=None, password=None):
         logging.debug("Initialize mongo storage")
-        self.mongo_client = MongoClient(host=hostname, port=port)
+        self.mongo_client = MongoClient(
+            host=hostname, port=port, username=username, password=password)
         self.mongo_db = self.mongo_client["testDB"]
         self.mongo_collection = self.mongo_db["articles"]
 
@@ -49,4 +50,4 @@ class MongoStorage(ArticleStore):
         return list(self.mongo_collection.find(query))
 
     def article_by_url(self, url):
-        return self.mongo_collection.find_one({ "url": url})
+        return self.mongo_collection.find_one({"url": url})
