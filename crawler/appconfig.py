@@ -14,5 +14,8 @@ class Config:
             load_dotenv()
 
             cls.__instance = super().__new__(cls)
-            cls.__instance.mongo_host = os.getenv("MONGO_HOST")
+            mongo_host = os.getenv("MONGO_HOST")
+            cls.__instance.mongo_host = mongo_host
+
+            logging.debug(f"Initialized config. mongo_host is {mongo_host}")
         return cls.__instance
