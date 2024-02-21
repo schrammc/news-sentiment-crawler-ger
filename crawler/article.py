@@ -1,5 +1,6 @@
 import sentiment
 import dataclasses
+from datetime import datetime
 
 
 class Article:
@@ -29,10 +30,16 @@ class Article:
 
     @classmethod
     def from_dict(cls, the_dict):
-        cls(
+        fetch_time = None
+        if type(the_dict["fetch_time"]).__name__ == "datetime":
+            fetch_time = the_dict["fetch_time"]
+        else:
+            fetch_time = datetime.fromisoformat(the_dict["fetch_time"])
+
+        return cls(
             the_dict["url"],
             the_dict["headline"],
             the_dict["article_text"],
-            the_dict["fetch_time"],
+            fetch_time,
             sentiment.SentimentProbabilities(**the_dict["text_sentiment"]),
         )
