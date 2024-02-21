@@ -65,6 +65,9 @@ jobs:
           key: ${{ secrets.SSH_SERVER_KEY }}
           envs: MONGO_USER,MONGO_HOST,MONGO_PASSWORD
           script: |
+            docker container prune -f
+            docker image prune -f
+
             docker pull schrammc012/schrammc-playground:crawler-crawler
             docker pull schrammc012/schrammc-playground:crawler-api
 
