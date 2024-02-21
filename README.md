@@ -1,13 +1,13 @@
 # News sentiment crawler
 
-This project is a small Python crawler for news sentiment
+This project is a small Python crawler for news sentiment.
 
 # Components
 
 ## API
 
-This is a minimal REST API for data access. The plan is to eventually expose
-this data publicly through this API.
+The API exposes scrapedsentiment data from German news sites. OpenAPI docs of
+the API are hosted [here](http://api.christof-schramm.net/docs)
 
 ## Crawler
 
@@ -19,6 +19,7 @@ sources.
 # How to run it
 
 Currently you can run this locally by cloning the repository and running `docker compose up`
+
 
 # Future work
 
