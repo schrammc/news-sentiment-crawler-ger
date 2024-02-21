@@ -14,13 +14,18 @@ async def crawl_and_store(storage: ArticleStore, site: NewsSite, loop_delay_minu
 
     :param loop_delay_minutes: the amount wait-time before crawling again"""
     while True:
-        async for x in site.linked_articles(storage):
-            if x.headline:
-                logging.debug(f"Storing article {x.headline} @ {x.url}")
-                storage.store_article(x)
+        try:
+            async for x in site.linked_articles(storage):
+                if x.headline:
+                    logging.debug(f"Storing article {x.headline} @ {x.url}")
+                    storage.store_article(x)
 
-        logging.debug(f"Sleeping {loop_delay_minutes} minutes before looping")
-        asyncio.sleep(60*loop_delay_minutes)
+            logging.debug(
+                f"Sleeping {loop_delay_minutes} minutes before looping")
+        except Exception as e:
+            logging.error(f"Exception while crawling {site.site_domain}: {e}")
+        finally:
+            asyncio.sleep(60*loop_delay_minutes)
 
 
 async def main():
