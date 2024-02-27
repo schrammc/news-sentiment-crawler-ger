@@ -1,8 +1,10 @@
 from fastapi import FastAPI
-from storage import MongoStorage
+from fastapi.middleware.cors import CORSMiddleware
+from crawler.storage import MongoStorage
 from datetime import datetime
-from appconfig import Config
-from sentiment import SentimentProbabilities
+from crawler.appconfig import Config
+from crawler.sentiment import SentimentProbabilities
+import uvicorn
 
 config = Config()
 storage = MongoStorage(config.mongo_host, 27017,
@@ -10,6 +12,13 @@ storage = MongoStorage(config.mongo_host, 27017,
 
 app = FastAPI()
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["https://christof-schramm.net"],
+    allow_credentials=False,
+    allow_methods=["*"],
+    allow_headers=["*"]
+    )
 
 @app.get("/article")
 def get_root(from_: datetime = None, to: datetime = None):
@@ -30,4 +39,12 @@ def get_sentiments() -> dict[datetime, SentimentProbabilities]:
     of positive/negative/neutral
 
     """
-    return storage.avg_sentiment_by_day()
+    result = {}
+
+    for date, sentiment in storage.avg_sentiment_by_day().items():
+        result[date.isoformat()] = sentiment
+
+    return result
+
+def start():
+    uvicorn.run("crawler.api:app", host="0.0.0.0", port=8080)

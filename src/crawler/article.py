@@ -1,4 +1,4 @@
-import sentiment
+import crawler.sentiment
 import dataclasses
 from datetime import datetime
 
@@ -13,7 +13,7 @@ class Article:
 
     @classmethod
     async def new_article(cls, url, headline, article_text, fetch_time):
-        article_sentiment = await sentiment.sentiment_of_text(article_text)
+        article_sentiment = await crawler.sentiment.sentiment_of_text(article_text)
         return Article(url, headline, article_text, fetch_time, article_sentiment)
 
     def __str__(self):
@@ -41,5 +41,5 @@ class Article:
             the_dict["headline"],
             the_dict["article_text"],
             fetch_time,
-            sentiment.SentimentProbabilities(**the_dict["text_sentiment"]),
+            crawler.sentiment.SentimentProbabilities(**the_dict["text_sentiment"]),
         )

@@ -1,10 +1,10 @@
 import logging
 import sys
 import asyncio
-from appconfig import Config
+from crawler.appconfig import Config
 
-from newssite import NewsSite, SiteSpiegel, SiteZeit
-from storage import ArticleStore, MongoStorage
+from crawler.newssite import NewsSite, SiteSpiegel, SiteZeit
+from crawler.storage import ArticleStore, MongoStorage
 
 sites = [SiteSpiegel(), SiteZeit()]
 
@@ -28,7 +28,7 @@ async def crawl_and_store(storage: ArticleStore, site: NewsSite, loop_delay_minu
             asyncio.sleep(60*loop_delay_minutes)
 
 
-async def main():
+async def crawler_main():
     logging.basicConfig(
         level=logging.DEBUG,
         format="[%(levelname)s] %(asctime)s -- %(message)s -- %(module)s:%(lineno)s",
@@ -44,4 +44,5 @@ async def main():
     )
 
 
-asyncio.run(main())
+def main():
+    asyncio.run(crawler_main())

@@ -8,17 +8,18 @@ sentiment_model_lock = asyncio.Lock()
 
 
 async def get_sentiment_model():
+    """Retrieve the global sentiment model."""
     global sentiment_model
     async with sentiment_model_lock:
         if sentiment_model is None:
             logging.info("Building sentiment model...")
             sentiment_model = germansentiment.SentimentModel()
 
-    return        sentiment_model
+    return sentiment_model
 
 
 async def sentiment_of_text(text):
-    """Extract the sentiment of a piece of german text"""
+    """Extract the sentiment of a piece of german text."""
     sentiment_model = await get_sentiment_model()
 
     probs = sentiment_model.predict_sentiment(

@@ -1,0 +1,23 @@
+[build-system]
+requires = ["setuptools ~= 69.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "news-sentiment-crawler-ger"
+license = { file = "LICENSE" }
+version = "0.0.1"
+readme = "README.md"
+dependencies = [
+  "germansentiment == 1.1.0",
+  "requests",
+  "bs4",
+  "pymongo",
+  "python-dotenv",
+
+  "fastapi",
+  "uvicorn"
+  ]
+
+[project.scripts]
+run-crawler = "crawler.main:main"
+run-api = "crawler.api:start"

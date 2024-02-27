@@ -3,8 +3,7 @@ version: '3.8'
 services:
   api:
     build:
-      context: crawler
-      dockerfile: ../Dockerfile.api
+      dockerfile: Dockerfile.api
     env_file:
       local.env
     ports:
@@ -12,8 +11,7 @@ services:
 
   crawler:
     build:
-      context: crawler
-      dockerfile: ../Dockerfile.crawler
+      dockerfile: Dockerfile.crawler
     env_file:
       local.env
 

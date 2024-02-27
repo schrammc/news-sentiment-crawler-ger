@@ -2,7 +2,7 @@ import urllib
 from bs4 import BeautifulSoup
 import requests
 from datetime import datetime, timezone
-from article import Article
+from crawler.article import Article
 import logging
 import asyncio
 

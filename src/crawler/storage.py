@@ -1,9 +1,9 @@
 from abc import abstractmethod
 from pymongo import MongoClient
-from article import Article
+from crawler.article import Article
 from statistics import mean
 import logging
-from sentiment import SentimentProbabilities
+from crawler.sentiment import SentimentProbabilities
 
 
 class ArticleStore:
